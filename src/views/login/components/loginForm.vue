@@ -1,7 +1,7 @@
 <template>
   <div class="login-form-wrapper">
     <div class="login-form-title">
-      {{ formStatus ? "在线判题OJ系统" : "注册" }}
+      {{ formStatus ? "XXX 系统" : "注册" }}
     </div>
     <!--    <div class="login-form-sub-title">欢迎登录 {{ errorMessage }}</div>-->
     <div class="login-form-error-msg"></div>
@@ -185,13 +185,13 @@
         <!--        </a-form-item>-->
       </div>
       <a-space :size="16" direction="vertical">
-        <div v-if="formStatus" class="login-form-password-actions">
-          <a-link @click="changeLoginMethod">
-            账号密码登录
-<!--            账号密码登录{{ isEmailLogin ? "账号密码登录 " : "邮箱登录" }}-->
-          </a-link>
-          <!--          <a-link>忘记密码?</a-link>-->
-        </div>
+        <!--        <div v-if="formStatus" class="login-form-password-actions">-->
+        <!--          <a-link @click="changeLoginMethod">-->
+        <!--            账号密码登录-->
+        <!--&lt;!&ndash;            账号密码登录{{ isEmailLogin ? "账号密码登录 " : "邮箱登录" }}&ndash;&gt;-->
+        <!--          </a-link>-->
+        <!--          &lt;!&ndash;          <a-link>忘记密码?</a-link>&ndash;&gt;-->
+        <!--        </div>-->
         <a-button
             v-if="formStatus"
             type="primary"
@@ -228,11 +228,11 @@
 import {ref, reactive} from "vue";
 import {useRouter} from "vue-router";
 import {ValidatedError} from "@arco-design/web-vue/es/form/interface";
-import {useStore} from "vuex";
 
 // import {UserControllerService, UserRegisterRequest} from "@/api";
 import message from "@arco-design/web-vue/es/message";
 import useLoading from "@/hooks/loading";
+import {useUserStore} from "@/store";
 
 const router = useRouter();
 const errorMessage = ref("");
@@ -240,7 +240,7 @@ const errorMessage = ref("");
 const formStatus = ref(true);
 const {loading, setLoading} = useLoading();
 const isEmailLogin = ref(false);
-const store = useStore();
+const store = useUserStore();
 const captchaTextRender = ref("发送验证码");
 const timer = ref(60); //倒计时
 const isAllowCount = ref(true);
@@ -340,7 +340,7 @@ const handleSubmit = async ({
     if (res.code === 0) {
       // 拿到请求路径中的重定向路径，如果有的话，就跳转到携带的路径上如果没有，就跳转到个人页面
       const toPath = router.currentRoute.value.fullPath.split("=");
-      await store.dispatch("user/getLoginUser", res);
+      store.setInfo(res.data);
       await router.push({
         path: toPath[1] === undefined ? "/workplace" : toPath[1],
         replace: true,
