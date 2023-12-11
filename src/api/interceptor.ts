@@ -11,7 +11,7 @@ export interface HttpResponse<T = unknown> {
 }
 
 //设置基本请求路径
-axios.defaults.baseURL = 'http://localhost:8080';
+axios.defaults.baseURL = 'http://localhost:8090';
 
 /**
  * 请求拦截器
@@ -67,7 +67,7 @@ axios.interceptors.response.use(
             return Promise.reject(new Error(res.message || 'Error'));
         } else {
             Message.success({
-                content: res.message,
+                content: res.message || '操作成功',
                 duration: 5 * 1000,
                 closable: true
             });
