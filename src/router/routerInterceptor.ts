@@ -1,37 +1,31 @@
-import type {Router, LocationQueryRaw} from 'vue-router';
+import type {Router} from 'vue-router';
 import {useUserStore} from "@/store";
-import usePermission from "@/hooks/permission";
-import {isLogin} from "@/utils/auth";
+import {getToken, isLogin} from "@/utils/auth";
 
 
 export default function routerInterceptor(router: Router) {
     router.beforeEach(async (to, from, next) => {
         const userStore = useUserStore();
-
-        async function crossroads() {
-            const Permission = usePermission();
-            if (Permission.accessRouter(to)) {
-                await next();
-            } else {
-                // 前往404。
-                await next('notFound');
-            }
+        //如果已经登录了，不能够再次访问登录页面
+        if (getToken() && to.path ==='/user/login'){
+            next('/');
+            return;
         }
-
-        console.log(to.meta.requiresAuth)
-        console.log("是否登录："+isLogin())
-        if (isLogin() || to.meta.requiresAuth) { // 判断用户是否登录
-            console.log("进来了")
-            //todo 存在循环，需要解决
-            if (userStore.userRole) { // 有角色信息表示当前用户已经登录且获取过用户信息
-                crossroads();
+        //如果前往的不需要权限认证，直接进行跳转
+        if (!to.meta.requiresAuth) {
+            next();
+            return;
+        }
+        if (isLogin()) { // 判断用户是否登录
+            const cloneRouters = to.meta?.roles as Array<string>;
+            if (cloneRouters.some(el => el === userStore.userRole)) {
+                //存在对应的权限，允许跳转
+                next();
+                return;
             } else {
-                try {
-                    await userStore.info(); // 获取用户角色信息后再进行后续跳转处理
-                    crossroads();
-                } catch (error) {
-                    next(`/user/login?redirect=${to.fullPath}`);
-                }
+                //权限不足，跳转至404页面
+                next('notFound');
+                return;
             }
         } else {
             // 如果未登录则重定向到登录页面
@@ -42,6 +36,5 @@ export default function routerInterceptor(router: Router) {
             next(`/user/login?redirect=${to.fullPath}`);
             return;
         }
-        next();
     });
 }

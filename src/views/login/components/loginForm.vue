@@ -233,7 +233,7 @@ import {ValidatedError} from "@arco-design/web-vue/es/form/interface";
 import message from "@arco-design/web-vue/es/message";
 import useLoading from "@/hooks/loading";
 import {useUserStore} from "@/store";
-import {login, LoginData} from "@/api/user";
+import {login, LoginData, register, RegisterData} from "@/api/user";
 
 const router = useRouter();
 const errorMessage = ref("");
@@ -331,7 +331,6 @@ const handleSubmit = async ({
     }
     // 登录成功，跳转到主页
     const toPath = router.currentRoute.value.fullPath.split("=");
-    console.log(toPath[1])
     await router.push({
       path: toPath[1] === undefined ? "/" : toPath[1],
       replace: true,
@@ -354,21 +353,23 @@ const registerEvent = () => {
         async (errors: undefined | Record<string, ValidatedError>) => {
           if (errors == void 0) {
             setLoading(true);
+            await register(userInfo as RegisterData);
+            setLoading(false);
             // 表单验证通过
-            try {
-              // const res = await UserControllerService.userRegisterUsingPost(
-              //     userInfo as UserRegisterRequest
-              // );
-              // if (res.code === 0) {
-              //   message.success("注册成功");
-              //   loginFormRef?.value?.resetFields();
-              //   formStatus.value = true;
-              // }
-            } catch (e) {
-              console.log("注册失败，" + (e as Error).message);
-            } finally {
-              setLoading(false);
-            }
+            // try {
+            //   // const res = await UserControllerService.userRegisterUsingPost(
+            //   //     userInfo as UserRegisterRequest
+            //   // );
+            //   // if (res.code === 0) {
+            //   //   message.success("注册成功");
+            //   //   loginFormRef?.value?.resetFields();
+            //   //   formStatus.value = true;
+            //   // }
+            // } catch (e) {
+            //   console.log("注册失败，" + (e as Error).message);
+            // } finally {
+            //   setLoading(false);
+            // }
           }
         }
     );

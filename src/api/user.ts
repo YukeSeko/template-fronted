@@ -7,6 +7,12 @@ export interface LoginData {
   userPassword: string;
 }
 
+export interface RegisterData{
+  userAccount: string;
+  userPassword: string;
+  checkPassword:string;
+}
+
 export interface LoginRes {
   token: string;
 }
@@ -20,4 +26,8 @@ export function logout() {
 
 export function getUserInfo() {
   return request.post<UserState>('/api/user/getLoginUser');
+}
+
+export function register(data:RegisterData) {
+  return request.post<LoginRes>('/api/user/register',data);
 }

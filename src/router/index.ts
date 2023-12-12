@@ -1,6 +1,6 @@
 import {createRouter, createWebHistory, RouteRecordRaw} from 'vue-router'
 import UserLoginIndex from "@/views/login/LoginIndex.vue";
-import index from "@/views/index.vue";
+import index from "@/views/home/index.vue";
 import notFound from "@/views/not-found/index.vue";
 import routerInterceptor from "@/router/routerInterceptor";
 
@@ -11,7 +11,7 @@ const routes: Array<RouteRecordRaw> = [
         component: index,
         meta: {
             requiresAuth: false,
-            roles: 'user',
+            roles: ['user'],
         }
     },
     {

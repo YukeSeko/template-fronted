@@ -1,4 +1,4 @@
-export type RoleType =  'ban' | 'admin' | 'user';
+export type RoleType =  'ban' | 'admin' | 'user' | '';
 export interface UserState {
   userAccount?: string;
   email?: string;

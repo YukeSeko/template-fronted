@@ -21,7 +21,7 @@ const useUserStore = defineStore('user', {
         userName: undefined,
         userAvatar: undefined,
         userProfile: undefined,
-        userRole: 'user',
+        userRole: '',
         token: '',
     }),
 
