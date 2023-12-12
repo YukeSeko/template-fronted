@@ -15,13 +15,14 @@ import {
 
 const useUserStore = defineStore('user', {
     state: (): UserState => ({
-        userAccount:undefined,
+        userAccount: undefined,
         email: undefined,
-        id:undefined,
-        userName:undefined,
-        userAvatar:undefined,
-        userProfile:undefined,
+        id: undefined,
+        userName: undefined,
+        userAvatar: undefined,
+        userProfile: undefined,
         userRole: 'user',
+        token: '',
     }),
 
     getters: {
@@ -59,9 +60,9 @@ const useUserStore = defineStore('user', {
             try {
                 const res = await userLogin(loginForm);
                 setToken(res.data.token);
+                this.setInfo(res.data)
             } catch (err) {
                 clearToken();
-                throw err;
             }
         },
         logoutCallBack() {

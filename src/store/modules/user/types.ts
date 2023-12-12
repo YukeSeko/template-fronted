@@ -7,4 +7,5 @@ export interface UserState {
   userAvatar?:string;
   userProfile?:string;
   userRole: RoleType;
+  token:string;
 }

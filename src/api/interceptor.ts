@@ -1,5 +1,4 @@
 import axios from 'axios';
-import type {AxiosRequestConfig, AxiosResponse} from 'axios';
 import {Message, Modal} from '@arco-design/web-vue';
 import {useUserStore} from '@/store';
 import {getToken} from '@/utils/auth';
@@ -11,12 +10,14 @@ export interface HttpResponse<T = unknown> {
 }
 
 //设置基本请求路径
-axios.defaults.baseURL = 'http://localhost:8090';
+const request = axios.create({
+    baseURL: 'http://localhost:8090'
+})
 
 /**
  * 请求拦截器
  */
-axios.interceptors.request.use(
+request.interceptors.request.use(
     (config) => {
         //携带用户token
         const token = getToken();
@@ -36,7 +37,7 @@ axios.interceptors.request.use(
 
 
 // 响应拦截器
-axios.interceptors.response.use(
+request.interceptors.response.use(
     (response) => {
         const res = response.data;
         // if the custom code is not 0, it is judged as an error.
@@ -44,27 +45,30 @@ axios.interceptors.response.use(
             Message.error({
                 content: res.message || 'Error',
                 duration: 5 * 1000,
-                closable:true
+                closable: true
             });
             // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
-            if (
-                [50008, 50012, 50014].includes(res.code) &&
-                response.config.url !== '/api/user/info'
-            ) {
-                Modal.error({
-                    title: 'Confirm logout',
-                    content:
-                        'You have been logged out, you can cancel to stay on this page, or log in again',
-                    okText: 'Re-Login',
-                    async onOk() {
-                        const userStore = useUserStore();
-
-                        await userStore.logout();
-                        window.location.reload();
-                    },
-                });
-            }
-            return Promise.reject(new Error(res.message || 'Error'));
+            // if (
+            //     [50008, 50012, 50014].includes(res.code) &&
+            //     response.config.url !== '/api/user/info'
+            // ) {
+            //     const userStore = useUserStore();
+            //
+            //     userStore.logout();
+            //     window.location.reload();
+            //     // Modal.error({
+            //     //     title: 'Confirm logout',
+            //     //     content:res.message,
+            //     //     okText: '重新登录',
+            //     //     async onOk() {
+            //     //         const userStore = useUserStore();
+            //     //
+            //     //         await userStore.logout();
+            //     //         window.location.reload();
+            //     //     },
+            //     // });
+            // }
+            // return Promise.reject(new Error(res.message || 'Error'));
         } else {
             Message.success({
                 content: res.message || '操作成功',
@@ -73,13 +77,16 @@ axios.interceptors.response.use(
             });
         }
         return res;
-    },
-    (error) => {
-        Message.error({
-            content: error.message || 'Request Error',
-            duration: 5 * 1000,
-            closable: true
-        });
-        return Promise.reject(error);
     }
+    // },
+    // (error) => {
+    //     Message.error({
+    //         content: error.message || 'Request Error',
+    //         duration: 5 * 1000,
+    //         closable: true
+    //     });
+    //     return Promise.reject(error);
+    // }
 );
+
+export default request;

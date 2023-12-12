@@ -10,7 +10,7 @@ const routes: Array<RouteRecordRaw> = [
         name: "首页",
         component: index,
         meta: {
-            requiresAuth: true,
+            requiresAuth: false,
             roles: 'user',
         }
     },

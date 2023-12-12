@@ -233,6 +233,7 @@ import {ValidatedError} from "@arco-design/web-vue/es/form/interface";
 import message from "@arco-design/web-vue/es/message";
 import useLoading from "@/hooks/loading";
 import {useUserStore} from "@/store";
+import {login, LoginData} from "@/api/user";
 
 const router = useRouter();
 const errorMessage = ref("");
@@ -308,17 +309,9 @@ const handleSubmit = async ({
   if (loading.value) return;
   if (!errors) {
     setLoading(true);
-    let res;
     if (!isEmailLogin.value) {
       // 通过账号密码进行登录
-      try {
-        // res = await UserControllerService.userLoginUsingPost(values);
-      } catch (err) {
-        //出现异常就return
-        console.log("登陆失败，请重试");
-        setLoading(false);
-        return;
-      }
+      await store.login(values as LoginData);
     } else {
       // 通过邮箱进行登录
       try {
@@ -337,18 +330,12 @@ const handleSubmit = async ({
       }
     }
     // 登录成功，跳转到主页
-    if (res.code === 0) {
-      // 拿到请求路径中的重定向路径，如果有的话，就跳转到携带的路径上如果没有，就跳转到个人页面
-      const toPath = router.currentRoute.value.fullPath.split("=");
-      store.setInfo(res.data);
-      await router.push({
-        path: toPath[1] === undefined ? "/workplace" : toPath[1],
-        replace: true,
-      });
-      message.success("登陆成功");
-    } else {
-      message.error("登陆失败，" + res.message);
-    }
+    const toPath = router.currentRoute.value.fullPath.split("=");
+    console.log(toPath[1])
+    await router.push({
+      path: toPath[1] === undefined ? "/" : toPath[1],
+      replace: true,
+    });
     setLoading(false);
   }
 };
