@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { UserState } from '@/store/modules/user/types';
 import request from "@/api/interceptor";
+import {RouteRecordNormalized} from "vue-router";
 
 export interface LoginData {
   userAccount: string;
@@ -25,7 +26,7 @@ export function logout() {
 }
 
 export function getUserInfo() {
-  return request.post<UserState>('/api/user/getLoginUser');
+  return request.get<UserState>('/api/user/getLoginUser');
 }
 
 export function register(data:RegisterData) {

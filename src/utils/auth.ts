@@ -1,3 +1,5 @@
+import {useUserStore} from "@/store";
+
 const TOKEN_KEY = 'token';
 
 const isLogin = () => {

@@ -1,37 +1,41 @@
 import {createRouter, createWebHistory, RouteRecordRaw} from 'vue-router'
 import UserLoginIndex from "@/views/login/LoginIndex.vue";
-import index from "@/views/home/index.vue";
 import notFound from "@/views/not-found/index.vue";
+import home from "@/views/home/index.vue";
 import routerInterceptor from "@/router/routerInterceptor";
-
-const routes: Array<RouteRecordRaw> = [
+import userInfo from "@/views/user/userInfo.vue"
+export const routes: Array<RouteRecordRaw> = [
     {
         path: "/",
         name: "首页",
-        component: index,
+        component:home,
         meta: {
             requiresAuth: false,
-            roles: ['user'],
+            hideInMenu: false
         }
     },
     {
-        path: "/user",
-        name: "login",
-        children: [
-            {
-                path: "/user/login",
-                name: "用户登录",
-                component: UserLoginIndex,
-            },
-        ],
+        path: "/user/login",
+        name: "用户登录",
+        component: UserLoginIndex,
         meta: {
             hideInMenu: true,
             requiresAuth: false
         },
     },
     {
+        path:"/user/Info",
+        name:"个人中心",
+        component:userInfo,
+        meta:{
+            hideInMenu: false,
+            requiresAuth: true,
+            roles:['user','admin']
+        }
+    },
+    {
         path: "/404",
-        name: "notFound",
+        name: "404",
         component: notFound,
         meta: {
             requiresAuth: false,

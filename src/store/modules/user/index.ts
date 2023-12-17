@@ -24,7 +24,7 @@ const useUserStore = defineStore('user', {
         userRole: '',
         token: '',
     }),
-
+    persist: true,//使用插件开启持久化全局状态
     getters: {
         userInfo(state: UserState): UserState {
             return {...state};
@@ -76,6 +76,7 @@ const useUserStore = defineStore('user', {
         async logout() {
             try {
                 await userLogout();
+                clearToken();
             } finally {
                 this.logoutCallBack();
             }
